@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <!-- =====================================================
+         1. BASIC DOCUMENT SETTINGS
+         ===================================================== -->
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ocean Quest</title>
+
+
+    <!-- =====================================================
+         2. CSS
+         ===================================================== -->
+
+    <style>
+        /* =====================================================
+           1. RESET
+           ===================================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        /* =====================================================
+           2. BODY
+           ===================================================== */
+
+        body {
+            width: 100vw;
+            height: 100vh;
+
+            overflow: hidden;
+
+            font-family: Arial, sans-serif;
+        }
+
+
+        /* =====================================================
+           3. INTRO SCREEN
+           ===================================================== */
+
+        #intro-screen {
+
+            position: relative;
+
+            width: 100vw;
+            height: 100vh;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+
+            align-items: center;
+
+            overflow: hidden;
+
+            background: linear-gradient(to bottom,
+                    #25c6e8,
+                    #087da8,
+                    #03466d);
+        }
+
+
+        /* =====================================================
+           4. WAVE LAYER
+           ===================================================== */
+
+        .waves {
+
+            position: absolute;
+
+            left: 0;
+            bottom: 0;
+
+            width: 100%;
+            height: 65%;
+
+            overflow: hidden;
+
+            pointer-events: none;
+        }
+
+
+        /* =====================================================
+           5. INDIVIDUAL WAVE
+           ===================================================== */
+
+        .wave {
+
+            position: absolute;
+
+            left: -50%;
+
+            width: 200%;
+            height: 180px;
+
+            border-radius: 50%;
+
+            background: rgba(255, 255, 255, 0.12);
+
+            animation: waveMovement 7s linear infinite;
+        }
+
+
+        /* =====================================================
+           6. FIRST WAVE
+           ===================================================== */
+
+        .wave:nth-child(1) {
+
+            top: 15%;
+
+            animation-duration: 7s;
+
+            opacity: 0.35;
+        }
+
+
+        /* =====================================================
+           7. SECOND WAVE
+           ===================================================== */
+
+        .wave:nth-child(2) {
+
+            top: 35%;
+
+            animation-duration: 10s;
+
+            opacity: 0.25;
+
+            animation-delay: -2s;
+        }
+
+
+        /* =====================================================
+           8. THIRD WAVE
+           ===================================================== */
+
+        .wave:nth-child(3) {
+
+            top: 55%;
+
+            animation-duration: 13s;
+
+            opacity: 0.18;
+
+            animation-delay: -4s;
+        }
+
+
+        /* =====================================================
+           9. WAVE MOVEMENT
+           ===================================================== */
+
+        @keyframes waveMovement {
+
+            0% {
+                transform: translateX(0);
+            }
+
+            50% {
+                transform: translateX(15%);
+            }
+
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+
+        /* =====================================================
+           10. GAME TITLE
+           ===================================================== */
+
+        #game-title {
+
+            position: relative;
+
+            z-index: 10;
+
+            color: white;
+
+            font-size: 60px;
+
+            font-weight: bold;
+
+            text-shadow:
+                0 4px 10px rgba(0, 0, 0, 0.4);
+
+            margin-bottom: 35px;
+        }
+
+
+        /* =====================================================
+           11. PLAY BUTTON
+           ===================================================== */
+
+        #play-button {
+
+            position: relative;
+
+            z-index: 10;
+
+            padding: 15px 55px;
+
+            font-size: 22px;
+
+            font-weight: bold;
+
+            border: none;
+
+            border-radius: 12px;
+
+            cursor: pointer;
+
+            background: white;
+
+            color: #05658a;
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        /* =====================================================
+           12. PLAY BUTTON HOVER
+           ===================================================== */
+
+        #play-button:hover {
+
+            transform: scale(1.08);
+
+            box-shadow:
+                0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+
+        /* =====================================================
+           13. GAME SCREEN
+           ===================================================== */
+
+        #game-screen {
+
+            display: none;
+
+            width: 100vw;
+            height: 100vh;
+
+            background: #087da8;
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         3. BACKGROUND MUSIC
+
+         autoplay:
+         Tells the browser to attempt automatic playback.
+
+         loop:
+         Music repeats continuously.
+
+         IMPORTANT:
+         Chrome may block audible autoplay until the user
+         interacts with the page.
+         ===================================================== -->
+
+    <audio id="background-music" autoplay loop>
+
+        <source src="assets/audio/BackgroundMusic.mp3" type="audio/mpeg">
+
+    </audio>
+
+
+    <!-- =====================================================
+         4. INTRO SCREEN
+         ===================================================== -->
+
+    <div id="intro-screen">
+
+
+        <!-- =================================================
+             ANIMATED WATER WAVES
+             ================================================= -->
+
+        <div class="waves">
+
+            <!-- Wave 1 -->
+            <div class="wave"></div>
+
+            <!-- Wave 2 -->
+            <div class="wave"></div>
+
+            <!-- Wave 3 -->
+            <div class="wave"></div>
+
+        </div>
+
+
+        <!-- =================================================
+             GAME TITLE
+             ================================================= -->
+
+        <h1 id="game-title">
+            🌊 OCEAN QUEST
+        </h1>
+
+
+        <!-- =================================================
+             PLAY BUTTON
+             ================================================= -->
+
+        <button id="play-button">
+            PLAY
+        </button>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         5. GAME SCREEN
+         ===================================================== -->
+
+    <div id="game-screen">
+
+    </div>
+
+
+    <!-- =====================================================
+         6. JAVASCRIPT
+         ===================================================== -->
+
+    <script>
+
+
+        /* =====================================================
+           GET HTML ELEMENTS
+           ===================================================== */
+
+        const introScreen =
+            document.getElementById("intro-screen");
+
+
+        const gameScreen =
+            document.getElementById("game-screen");
+
+
+        const playButton =
+            document.getElementById("play-button");
+
+
+        const backgroundMusic =
+            document.getElementById("background-music");
+
+
+        /* =====================================================
+           TRY TO START MUSIC IMMEDIATELY
+
+           This runs as soon as the page loads.
+
+           Chrome may allow it or may block it depending on
+           the browser's autoplay policy.
+           ===================================================== */
+
+        backgroundMusic.play()
+            .then(function () {
+
+                console.log("Background music started.");
+
+            })
+            .catch(function (error) {
+
+                console.log(
+                    "Autoplay was blocked by the browser."
+                );
+
+            });
+
+
+        /* =====================================================
+           FALLBACK
+
+           If Chrome blocks autoplay, the FIRST interaction
+           anywhere on the intro screen will start the music.
+
+           The player does NOT have to click PLAY specifically.
+           ===================================================== */
+
+        introScreen.addEventListener(
+            "click",
+            function startMusic() {
+
+                backgroundMusic.play()
+                    .catch(function (error) {
+
+                        console.log(
+                            "Music could not start:",
+                            error
+                        );
+
+                    });
+
+                /*
+                    Remove this listener after the first
+                    interaction because we only need it once.
+                */
+
+                introScreen.removeEventListener(
+                    "click",
+                    startMusic
+                );
+
+            }
+        );
+
+
+        /* =====================================================
+           PLAY BUTTON
+
+           PLAY only changes the screen.
+
+           Music is NOT started here because we're trying to
+           have it playing before PLAY is pressed.
+           ===================================================== */
+
+        playButton.addEventListener(
+            "click",
+            function () {
+
+                // Hide intro
+                introScreen.style.display = "none";
+
+                // Show game
+                gameScreen.style.display = "block";
+
+            }
+        );
+
+
+    </script>
+
+
+</body>
+
+</html>
