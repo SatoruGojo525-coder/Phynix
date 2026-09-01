@@ -7,10 +7,13 @@
          1. BASIC DOCUMENT SETTINGS
          ===================================================== -->
 
+    <!-- Allows normal text, symbols and emojis -->
     <meta charset="UTF-8">
 
+    <!-- Makes the game fit different screen sizes -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <!-- Browser tab title -->
     <title>Ocean Quest</title>
 
 
@@ -65,6 +68,8 @@
 
             overflow: hidden;
 
+            /* Ocean background */
+
             background: linear-gradient(to bottom,
                     #25c6e8,
                     #087da8,
@@ -84,7 +89,7 @@
             bottom: 0;
 
             width: 100%;
-            height: 65%;
+            height: 70%;
 
             overflow: hidden;
 
@@ -105,11 +110,17 @@
             width: 200%;
             height: 180px;
 
-            border-radius: 50%;
+            border-radius: 45% 55% 45% 55%;
 
             background: rgba(255, 255, 255, 0.12);
 
-            animation: waveMovement 7s linear infinite;
+            animation-name: oceanWave;
+
+            animation-timing-function: ease-in-out;
+
+            animation-iteration-count: infinite;
+
+            will-change: transform;
         }
 
 
@@ -119,11 +130,13 @@
 
         .wave:nth-child(1) {
 
-            top: 15%;
+            top: 10%;
 
-            animation-duration: 7s;
+            height: 200px;
 
-            opacity: 0.35;
+            opacity: 0.30;
+
+            animation-duration: 4s;
         }
 
 
@@ -133,13 +146,15 @@
 
         .wave:nth-child(2) {
 
-            top: 35%;
+            top: 32%;
 
-            animation-duration: 10s;
+            height: 220px;
 
-            opacity: 0.25;
+            opacity: 0.22;
 
-            animation-delay: -2s;
+            animation-duration: 5.5s;
+
+            animation-delay: -1.5s;
         }
 
 
@@ -151,30 +166,45 @@
 
             top: 55%;
 
-            animation-duration: 13s;
+            height: 240px;
 
-            opacity: 0.18;
+            opacity: 0.16;
 
-            animation-delay: -4s;
+            animation-duration: 7s;
+
+            animation-delay: -3s;
         }
 
 
         /* =====================================================
-           9. WAVE MOVEMENT
+           9. REALISTIC WAVE MOVEMENT
            ===================================================== */
 
-        @keyframes waveMovement {
+        @keyframes oceanWave {
 
             0% {
-                transform: translateX(0);
+                transform:
+                    translateX(-5%) translateY(0) rotate(0deg);
+            }
+
+            25% {
+                transform:
+                    translateX(4%) translateY(-12px) rotate(0.5deg);
             }
 
             50% {
-                transform: translateX(15%);
+                transform:
+                    translateX(12%) translateY(4px) rotate(-0.5deg);
+            }
+
+            75% {
+                transform:
+                    translateX(5%) translateY(-8px) rotate(0.4deg);
             }
 
             100% {
-                transform: translateX(0);
+                transform:
+                    translateX(-5%) translateY(0) rotate(0deg);
             }
         }
 
@@ -248,7 +278,54 @@
 
 
         /* =====================================================
-           13. GAME SCREEN
+           13. SOUND BUTTON
+           ===================================================== */
+
+        #soundToggle {
+
+            position: relative;
+
+            z-index: 10;
+
+            margin-top: 15px;
+
+            padding: 10px 25px;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            border: none;
+
+            border-radius: 10px;
+
+            cursor: pointer;
+
+            background: rgba(255, 255, 255, 0.9);
+
+            color: #05658a;
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        /* =====================================================
+           14. SOUND BUTTON HOVER
+           ===================================================== */
+
+        #soundToggle:hover {
+
+            transform: scale(1.05);
+
+            box-shadow:
+                0 5px 15px rgba(0, 0, 0, 0.25);
+        }
+
+
+        /* =====================================================
+           15. GAME SCREEN
            ===================================================== */
 
         #game-screen {
@@ -256,6 +333,7 @@
             display: none;
 
             width: 100vw;
+
             height: 100vh;
 
             background: #087da8;
@@ -271,15 +349,13 @@
     <!-- =====================================================
          3. BACKGROUND MUSIC
 
-         autoplay:
-         Tells the browser to attempt automatic playback.
+         autoplay = asks the browser to start music
+         automatically.
 
-         loop:
-         Music repeats continuously.
+         loop = repeats the music continuously.
 
-         IMPORTANT:
-         Chrome may block audible autoplay until the user
-         interacts with the page.
+         Chrome may block audible autoplay until the
+         player interacts with the page.
          ===================================================== -->
 
     <audio id="background-music" autoplay loop>
@@ -332,11 +408,33 @@
         </button>
 
 
+        <!-- =================================================
+             SOUND TOGGLE BUTTON
+             ================================================= -->
+
+        <button id="soundToggle" type="button">
+
+            🔊 Sound ON
+
+        </button>
+
+
     </div>
 
 
     <!-- =====================================================
          5. GAME SCREEN
+
+         The actual game will be built here later.
+
+         Planned elements:
+
+         🚢 Ship
+         🌊 Ocean
+         🐢 Turtle
+         🗑️ Garbage
+         🪼 Jellyfish
+         ☁️ Health
          ===================================================== -->
 
     <div id="game-screen">
@@ -355,78 +453,144 @@
            GET HTML ELEMENTS
            ===================================================== */
 
+        // Get intro screen
         const introScreen =
             document.getElementById("intro-screen");
 
 
+        // Get game screen
         const gameScreen =
             document.getElementById("game-screen");
 
 
+        // Get PLAY button
         const playButton =
             document.getElementById("play-button");
 
 
+        // Get background music
         const backgroundMusic =
             document.getElementById("background-music");
 
 
+        // Get sound toggle button
+        const soundToggle =
+            document.getElementById("soundToggle");
+
+
         /* =====================================================
-           TRY TO START MUSIC IMMEDIATELY
+           TRY TO START MUSIC AUTOMATICALLY
+           =====================================================
 
-           This runs as soon as the page loads.
+           This attempts to start the music immediately
+           when the page loads.
 
-           Chrome may allow it or may block it depending on
-           the browser's autoplay policy.
+           Chrome may block it because of autoplay rules.
            ===================================================== */
 
         backgroundMusic.play()
             .then(function () {
 
-                console.log("Background music started.");
+                console.log(
+                    "Background music started automatically."
+                );
 
             })
-            .catch(function (error) {
+            .catch(function () {
 
                 console.log(
-                    "Autoplay was blocked by the browser."
+                    "Browser blocked automatic music."
                 );
 
             });
 
 
         /* =====================================================
-           FALLBACK
+           FIRST INTERACTION FALLBACK
+           =====================================================
 
-           If Chrome blocks autoplay, the FIRST interaction
-           anywhere on the intro screen will start the music.
+           If Chrome blocks autoplay, the first click on
+           the intro screen will attempt to start the music.
 
-           The player does NOT have to click PLAY specifically.
+           This means the player doesn't necessarily have
+           to click PLAY.
            ===================================================== */
+
+        function startMusicAfterInteraction() {
+
+            backgroundMusic.play()
+                .then(function () {
+
+                    console.log(
+                        "Music started after user interaction."
+                    );
+
+                })
+                .catch(function (error) {
+
+                    console.log(
+                        "Music could not start:",
+                        error
+                    );
+
+                });
+
+
+            // Remove this event after first interaction
+            introScreen.removeEventListener(
+                "click",
+                startMusicAfterInteraction
+            );
+        }
+
 
         introScreen.addEventListener(
             "click",
-            function startMusic() {
+            startMusicAfterInteraction
+        );
 
-                backgroundMusic.play()
-                    .catch(function (error) {
 
-                        console.log(
-                            "Music could not start:",
-                            error
-                        );
+        /* =====================================================
+           SOUND ON / OFF BUTTON
+           =====================================================
 
-                    });
+           Clicking this button mutes or unmutes the music.
+           ===================================================== */
+
+        soundToggle.addEventListener(
+            "click",
+            function (event) {
 
                 /*
-                    Remove this listener after the first
-                    interaction because we only need it once.
+                    Stop this click from also being treated
+                    as a general intro interaction.
                 */
 
-                introScreen.removeEventListener(
-                    "click",
-                    startMusic
-                );
+                event.stopPropagation();
+
+
+                // If music is currently muted
+                if (backgroundMusic.muted) {
+
+                    // Unmute music
+                    backgroundMusic.muted = false;
+
+                    // Change button text
+                    soundToggle.innerHTML =
+                        "🔊 Sound ON";
+
+                }
+
+                // If music is currently playing normally
+                else {
+
+                    // Mute music
+                    backgroundMusic.muted = true;
+
+                    // Change button text
+                    soundToggle.innerHTML =
+                        "🔇 Sound OFF";
+                }
 
             }
         );
@@ -434,21 +598,24 @@
 
         /* =====================================================
            PLAY BUTTON
+           =====================================================
 
-           PLAY only changes the screen.
+           PLAY only changes from the intro screen to the
+           game screen.
 
-           Music is NOT started here because we're trying to
-           have it playing before PLAY is pressed.
+           Music is not started here because we're trying
+           to have it playing before PLAY.
            ===================================================== */
 
         playButton.addEventListener(
             "click",
             function () {
 
-                // Hide intro
+                // Hide intro screen
                 introScreen.style.display = "none";
 
-                // Show game
+
+                // Show game screen
                 gameScreen.style.display = "block";
 
             }
