@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <!-- =====================================================
+         OCEAN QUEST - RESPONSIVE OCEAN SCENE
+         Ship + Ocean + Garbage Obstacles
+         ===================================================== -->
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ocean Quest - Ocean Scene</title>
+
+    <style>
+        /* =====================================================
+           1. RESET
+           ===================================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        /* =====================================================
+           2. FULL SCREEN
+           ===================================================== */
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: #7ddff5;
+            font-family: Arial, sans-serif;
+        }
+
+
+        /* =====================================================
+           3. SKY
+           ===================================================== */
+
+        .sky {
+            position: absolute;
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 42%;
+
+            background: linear-gradient(to bottom,
+                    #63d5f2,
+                    #b7edf8);
+
+            z-index: 1;
+        }
+
+
+        /* =====================================================
+           4. SUN
+           ===================================================== */
+
+        .sun {
+            position: absolute;
+
+            top: 8%;
+            right: 12%;
+
+            width: 90px;
+            height: 90px;
+
+            background: #ffd93d;
+
+            border-radius: 50%;
+
+            box-shadow:
+                0 0 25px #ffd93d,
+                0 0 50px rgba(255, 217, 61, 0.6);
+
+            z-index: 2;
+
+            animation: sunGlow 3s ease-in-out infinite;
+        }
+
+
+        /* =====================================================
+           5. SUN GLOW
+           ===================================================== */
+
+        @keyframes sunGlow {
+
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+
+        }
+
+
+        /* =====================================================
+           6. OCEAN
+           ===================================================== */
+
+        .ocean {
+            position: absolute;
+
+            top: 42%;
+            left: 0;
+
+            width: 100%;
+            height: 58%;
+
+            background: linear-gradient(to bottom,
+                    #078db5,
+                    #05658d,
+                    #03496d);
+
+            overflow: hidden;
+
+            z-index: 3;
+        }
+
+
+        /* =====================================================
+           7. HORIZON WAVE AREA
+           ===================================================== */
+
+        .surface {
+            position: absolute;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 55px;
+
+            overflow: hidden;
+
+            z-index: 10;
+        }
+
+
+        /* =====================================================
+           8. MAIN SURFACE WAVE
+           ===================================================== */
+
+        .wave {
+            position: absolute;
+
+            top: -28px;
+            left: -10%;
+
+            width: 120%;
+            height: 70px;
+
+            border-radius: 50%;
+
+            background: #078db5;
+
+            animation:
+                surfaceWave 2.8s ease-in-out infinite;
+
+            will-change: transform;
+        }
+
+
+        /* =====================================================
+           9. SECOND WAVE
+           ===================================================== */
+
+        .wave-two {
+            position: absolute;
+
+            top: -20px;
+            left: -15%;
+
+            width: 130%;
+            height: 65px;
+
+            border-radius: 50%;
+
+            background: #087fa5;
+
+            animation:
+                surfaceWaveTwo 4s ease-in-out infinite;
+
+            animation-delay: -1.5s;
+
+            will-change: transform;
+        }
+
+
+        /* =====================================================
+           10. THIRD WAVE
+           ===================================================== */
+
+        .wave-three {
+            position: absolute;
+
+            top: -14px;
+            left: -20%;
+
+            width: 140%;
+            height: 55px;
+
+            border-radius: 50%;
+
+            background: #0a7396;
+
+            animation:
+                surfaceWaveThree 5.2s ease-in-out infinite;
+
+            animation-delay: -3s;
+
+            will-change: transform;
+        }
+
+
+        /* =====================================================
+           11. MAIN WAVE ANIMATION
+           ===================================================== */
+
+        @keyframes surfaceWave {
+
+            0% {
+                transform:
+                    translateX(-3%) translateY(0) scaleY(1);
+            }
+
+            25% {
+                transform:
+                    translateX(3%) translateY(-5px) scaleY(1.15);
+            }
+
+            50% {
+                transform:
+                    translateX(7%) translateY(3px) scaleY(0.85);
+            }
+
+            75% {
+                transform:
+                    translateX(2%) translateY(-4px) scaleY(1.1);
+            }
+
+            100% {
+                transform:
+                    translateX(-3%) translateY(0) scaleY(1);
+            }
+
+        }
+
+
+        /* =====================================================
+           12. SECOND WAVE ANIMATION
+           ===================================================== */
+
+        @keyframes surfaceWaveTwo {
+
+            0% {
+                transform:
+                    translateX(5%) translateY(0);
+            }
+
+            50% {
+                transform:
+                    translateX(-5%) translateY(5px);
+            }
+
+            100% {
+                transform:
+                    translateX(5%) translateY(0);
+            }
+
+        }
+
+
+        /* =====================================================
+           13. THIRD WAVE ANIMATION
+           ===================================================== */
+
+        @keyframes surfaceWaveThree {
+
+            0% {
+                transform:
+                    translateX(-4%) translateY(0);
+            }
+
+            50% {
+                transform:
+                    translateX(6%) translateY(-4px);
+            }
+
+            100% {
+                transform:
+                    translateX(-4%) translateY(0);
+            }
+
+        }
+
+
+        /* =====================================================
+           14. SHIP
+           ===================================================== */
+
+        .ship {
+            position: absolute;
+
+            /*
+                Ocean begins at 42%.
+
+                Ship body = 45px.
+
+                This makes the bottom of the ship
+                touch the water.
+            */
+
+            top: calc(42% - 45px);
+
+            right: -220px;
+
+            width: clamp(140px, 14vw, 190px);
+            height: clamp(75px, 7.5vw, 100px);
+
+            z-index: 4;
+
+            animation:
+                shipEnter 6s ease-out forwards;
+        }
+
+
+        /* =====================================================
+           15. SHIP BODY
+           ===================================================== */
+
+        .ship-body {
+            position: absolute;
+
+            bottom: 0;
+            left: 0;
+
+            width: 100%;
+            height: 45px;
+
+            background: #263238;
+
+            border-radius:
+                0 0 70px 35px;
+
+            clip-path:
+                polygon(0 0,
+                    100% 0,
+                    82% 100%,
+                    15% 100%);
+        }
+
+
+        /* =====================================================
+           16. SHIP CABIN
+           ===================================================== */
+
+        .ship-cabin {
+            position: absolute;
+
+            bottom: 38px;
+            left: 24%;
+
+            width: 50%;
+            height: 45px;
+
+            background: #f5f5f5;
+
+            border-radius:
+                8px 8px 0 0;
+        }
+
+
+        /* =====================================================
+           17. SHIP WINDOWS
+           ===================================================== */
+
+        .ship-window {
+            display: inline-block;
+
+            width: 18px;
+            height: 15px;
+
+            margin-top: 10px;
+            margin-left: 7px;
+
+            background: #4dd0e1;
+
+            border-radius: 3px;
+        }
+
+
+        /* =====================================================
+           18. SHIP STACK
+           ===================================================== */
+
+        .ship-stack {
+            position: absolute;
+
+            bottom: 55px;
+            left: 11%;
+
+            width: 22px;
+            height: 40px;
+
+            background: #37474f;
+
+            border-radius:
+                4px 4px 0 0;
+        }
+
+
+        /* =====================================================
+           19. GARBAGE SOURCE
+           ===================================================== */
+
+        .garbage {
+            position: absolute;
+
+            /*
+                Garbage starts from this position
+                on the ship.
+            */
+
+            top: 82px;
+            left: 66%;
+
+            font-size:
+                clamp(15px, 1.4vw, 18px);
+
+            opacity: 0;
+
+            pointer-events: none;
+        }
+
+
+        /* =====================================================
+           20. SHIP ENTERING ANIMATION
+           ===================================================== */
+
+        @keyframes shipEnter {
+
+            0% {
+                right: -220px;
+            }
+
+            60% {
+                right: 22%;
+            }
+
+            100% {
+                right: 22%;
+            }
+
+        }
+
+
+        /* =====================================================
+           21. GARBAGE FORMATION
+           =====================================================
+
+           FIXED OBSTACLE DESIGN:
+
+                 🗑️              🥫
+              ROW 1
+
+
+              🧴       🗑️
+              ROW 2
+
+
+                         🧴       🗑️
+                         ROW 3
+
+           Large vertical gaps between rows.
+           ===================================================== */
+
+        .garbage-formation {
+
+            position: absolute;
+
+            /*
+                Full responsive area.
+            */
+
+            left: 0;
+            top: 0;
+
+            width: 100%;
+            height: 100%;
+
+            z-index: 6;
+
+            pointer-events: none;
+        }
+
+
+        /* =====================================================
+           22. GARBAGE SLOT
+           ===================================================== */
+
+        .garbage-slot {
+
+            position: absolute;
+
+            width:
+                clamp(42px, 5vw, 65px);
+
+            height:
+                clamp(42px, 5vw, 65px);
+
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+
+            font-size:
+                clamp(22px, 3vw, 34px);
+
+            opacity: 0;
+
+            /*
+                Slot does not block the turtle
+                until garbage arrives.
+            */
+
+            pointer-events: none;
+        }
+
+
+        /* =====================================================
+           23. ROW 1 POSITIONS
+           ===================================================== */
+
+        /*
+             🗑️              🥫
+        */
+
+        .slot-1 {
+            left: 22%;
+            top: 14%;
+        }
+
+        .slot-3 {
+            left: 62%;
+            top: 14%;
+        }
+
+
+        /* =====================================================
+           24. ROW 2 POSITIONS
+           ===================================================== */
+
+        /*
+             🧴       🗑️
+        */
+
+        .slot-4 {
+            left: 30%;
+            top: 42%;
+        }
+
+        .slot-5 {
+            left: 46%;
+            top: 42%;
+        }
+
+
+        /* =====================================================
+           25. ROW 3 POSITIONS
+           ===================================================== */
+
+        /*
+                    🧴       🗑️
+        */
+
+        .slot-8 {
+            left: 62%;
+            top: 72%;
+        }
+
+        .slot-9 {
+            left: 78%;
+            top: 72%;
+        }
+
+
+        /* =====================================================
+           26. VISIBLE GARBAGE
+           ===================================================== */
+
+        .garbage-slot.visible {
+
+            opacity: 1;
+
+            animation:
+                garbageFloat 2.5s ease-in-out infinite;
+        }
+
+
+        /* =====================================================
+           27. GARBAGE FLOATING
+           ===================================================== */
+
+        @keyframes garbageFloat {
+
+            0% {
+                transform:
+                    translateY(0);
+            }
+
+            50% {
+                transform:
+                    translateY(-4px);
+            }
+
+            100% {
+                transform:
+                    translateY(0);
+            }
+
+        }
+
+
+        /* =====================================================
+           28. FLYING GARBAGE
+           ===================================================== */
+
+        .flying-garbage {
+
+            position: fixed;
+
+            z-index: 100;
+
+            pointer-events: none;
+
+            font-size:
+                clamp(18px, 2vw, 26px);
+
+            transition:
+
+                left 1.5s cubic-bezier(0.25,
+                    0.8,
+                    0.25,
+                    1),
+
+                top 1.5s cubic-bezier(0.25,
+                    0.8,
+                    0.25,
+                    1),
+
+                transform 1.5s ease;
+        }
+
+
+        /* =====================================================
+           29. MOBILE
+           ===================================================== */
+
+        @media (max-width: 600px) {
+
+            .sun {
+                width: 65px;
+                height: 65px;
+            }
+
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         SKY
+         ===================================================== -->
+
+    <div class="sky"></div>
+
+
+    <!-- =====================================================
+         SUN
+         ===================================================== -->
+
+    <div class="sun"></div>
+
+
+    <!-- =====================================================
+         SHIP
+         ===================================================== -->
+
+    <div class="ship">
+
+        <div class="ship-body"></div>
+
+        <div class="ship-cabin">
+
+            <div class="ship-window"></div>
+
+            <div class="ship-window"></div>
+
+            <div class="ship-window"></div>
+
+        </div>
+
+        <div class="ship-stack"></div>
+
+
+        <!-- GARBAGE SOURCE -->
+
+        <div class="garbage garbage-one">
+            🗑️
+        </div>
+
+        <div class="garbage garbage-two">
+            🧴
+        </div>
+
+        <div class="garbage garbage-three">
+            🥫
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         OCEAN
+         ===================================================== -->
+
+    <div class="ocean">
+
+
+        <!-- =================================================
+             SURFACE WAVES
+             ================================================= -->
+
+        <div class="surface">
+
+            <div class="wave"></div>
+
+            <div class="wave-two"></div>
+
+            <div class="wave-three"></div>
+
+        </div>
+
+
+        <!-- =================================================
+             GARBAGE FORMATION
+             ================================================= -->
+
+        <div class="garbage-formation">
+
+
+            <!-- =========================
+                 ROW 1
+                 ========================= -->
+
+            <div class="garbage-slot slot-1" data-garbage="🗑️">
+
+                🗑️
+
+            </div>
+
+
+            <div class="garbage-slot slot-3" data-garbage="🥫">
+
+                🥫
+
+            </div>
+
+
+            <!-- =========================
+                 ROW 2
+                 ========================= -->
+
+            <div class="garbage-slot slot-4" data-garbage="🧴">
+
+                🧴
+
+            </div>
+
+
+            <div class="garbage-slot slot-5" data-garbage="🗑️">
+
+                🗑️
+
+            </div>
+
+
+            <!-- =========================
+                 ROW 3
+                 ========================= -->
+
+            <div class="garbage-slot slot-8" data-garbage="🧴">
+
+                🧴
+
+            </div>
+
+
+            <div class="garbage-slot slot-9" data-garbage="🗑️">
+
+                🗑️
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
+
+    <script>
+
+
+        /* =====================================================
+           GET ELEMENTS
+           ===================================================== */
+
+        const garbageObjects =
+            document.querySelectorAll(
+                ".garbage"
+            );
+
+
+        const slots =
+            document.querySelectorAll(
+                ".garbage-slot"
+            );
+
+
+        /* =====================================================
+           GARBAGE THROW ORDER
+           =====================================================
+
+           The garbage will be thrown in this order:
+
+           1 → 🗑️
+           3 → 🥫
+           4 → 🧴
+           5 → 🗑️
+           8 → 🧴
+           9 → 🗑️
+
+           ===================================================== */
+
+        const activeSlots = [
+            slots[0],
+            slots[1],
+            slots[2],
+            slots[3],
+            slots[4],
+            slots[5]
+        ];
+
+
+        /* =====================================================
+           START AFTER SHIP ARRIVES
+           ===================================================== */
+
+        setTimeout(() => {
+
+            throwGarbage(0);
+
+        }, 4000);
+
+
+        /* =====================================================
+           THROW GARBAGE
+           ===================================================== */
+
+        function throwGarbage(index) {
+
+
+            /* ================================================
+               STOP WHEN ALL GARBAGE HAS BEEN THROWN
+               ================================================ */
+
+            if (
+                index >= activeSlots.length
+            ) {
+
+                return;
+
+            }
+
+
+            /* ================================================
+               SOURCE GARBAGE
+
+               Cycle through the 3 garbage
+               objects on the ship.
+               ================================================ */
+
+            const source =
+                garbageObjects[
+                index %
+                garbageObjects.length
+                ];
+
+
+            /* ================================================
+               GET SOURCE POSITION
+               ================================================ */
+
+            const sourceRect =
+                source.getBoundingClientRect();
+
+
+            /* ================================================
+               GET DESTINATION SLOT
+               ================================================ */
+
+            const slot =
+                activeSlots[index];
+
+
+            const slotRect =
+                slot.getBoundingClientRect();
+
+
+            /* ================================================
+               CREATE FLYING GARBAGE
+               ================================================ */
+
+            const flying =
+                document.createElement(
+                    "div"
+                );
+
+
+            flying.className =
+                "flying-garbage";
+
+
+            flying.textContent =
+                slot.dataset.garbage;
+
+
+            /* ================================================
+               START AT SHIP
+               ================================================ */
+
+            flying.style.left =
+                `${sourceRect.left}px`;
+
+
+            flying.style.top =
+                `${sourceRect.top}px`;
+
+
+            document.body.appendChild(
+                flying
+            );
+
+
+            /* ================================================
+               FORCE BROWSER REFLOW
+               ================================================ */
+
+            void flying.offsetWidth;
+
+
+            /* ================================================
+               CALCULATE DESTINATION
+               ================================================ */
+
+            const destinationLeft =
+                slotRect.left +
+                slotRect.width / 2 -
+                flying.offsetWidth / 2;
+
+
+            const destinationTop =
+                slotRect.top +
+                slotRect.height / 2 -
+                flying.offsetHeight / 2;
+
+
+            /* ================================================
+               DIRECT SHIP → POSITION MOVEMENT
+               ================================================ */
+
+            flying.style.left =
+                `${destinationLeft}px`;
+
+
+            flying.style.top =
+                `${destinationTop}px`;
+
+
+            flying.style.transform =
+                `rotate(
+                    ${180 + index * 40}deg
+                )`;
+
+
+            /* ================================================
+               AFTER ARRIVAL
+               ================================================ */
+
+            setTimeout(() => {
+
+
+                /*
+                 * Make the garbage permanent.
+                 */
+
+                slot.classList.add(
+                    "visible"
+                );
+
+
+                /*
+                 * Remove the flying copy.
+                 */
+
+                flying.remove();
+
+
+                /*
+                 * Throw next garbage.
+                 */
+
+                setTimeout(() => {
+
+                    throwGarbage(
+                        index + 1
+                    );
+
+                }, 500);
+
+
+            }, 1500);
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>

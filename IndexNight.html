@@ -1,0 +1,1808 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ocean Quest</title>
+
+    <style>
+        /* =========================================================
+           RESET
+        ========================================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #020b14;
+        }
+
+        /* =========================================================
+           INTRO SCREEN
+        ========================================================= */
+        #intro-screen {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background:
+                linear-gradient(to bottom,
+                    #090f22 0%,
+                    #111a31 16%,
+                    #1b2a42 31%,
+                    #1e394c 45%,
+                    #0d3447 52%,
+                    #07263a 65%,
+                    #031522 100%);
+        }
+
+        /* =========================================================
+           ATMOSPHERIC SKY
+        ========================================================= */
+        #intro-screen::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            background:
+                radial-gradient(ellipse at 75% 25%,
+                    rgba(221, 190, 205, 0.20),
+                    rgba(221, 190, 205, 0.07) 20%,
+                    transparent 48%),
+                radial-gradient(ellipse at 28% 48%,
+                    rgba(67, 178, 183, 0.14),
+                    transparent 48%),
+                linear-gradient(to bottom,
+                    transparent 0%,
+                    transparent 50%,
+                    rgba(0, 15, 27, 0.18) 72%,
+                    rgba(0, 8, 17, 0.55) 100%);
+        }
+
+        /* =========================================================
+           STARS
+        ========================================================= */
+        .stars {
+            position: absolute;
+            inset: 0;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            border-radius: 50%;
+            background: #fff5d6;
+            box-shadow:
+                0 0 4px rgba(255, 245, 214, 0.9),
+                0 0 9px rgba(255, 245, 214, 0.35);
+            animation:
+                starTwinkle var(--twinkle-time) ease-in-out infinite;
+            animation-delay: var(--delay);
+        }
+
+        .star:nth-child(1) {
+            left: 7%;
+            top: 13%;
+            --twinkle-time: 3s;
+            --delay: -1s;
+        }
+
+        .star:nth-child(2) {
+            left: 15%;
+            top: 25%;
+            --twinkle-time: 4s;
+            --delay: -2s;
+        }
+
+        .star:nth-child(3) {
+            left: 28%;
+            top: 10%;
+            --twinkle-time: 3.5s;
+            --delay: -0.5s;
+        }
+
+        .star:nth-child(4) {
+            left: 41%;
+            top: 20%;
+            --twinkle-time: 5s;
+            --delay: -3s;
+        }
+
+        .star:nth-child(5) {
+            left: 54%;
+            top: 9%;
+            --twinkle-time: 4s;
+            --delay: -1.5s;
+        }
+
+        .star:nth-child(6) {
+            left: 66%;
+            top: 27%;
+            --twinkle-time: 3s;
+            --delay: -2s;
+        }
+
+        .star:nth-child(7) {
+            left: 82%;
+            top: 13%;
+            --twinkle-time: 4.5s;
+            --delay: -1s;
+        }
+
+        .star:nth-child(8) {
+            left: 92%;
+            top: 30%;
+            --twinkle-time: 3.5s;
+            --delay: -2.5s;
+        }
+
+        .star:nth-child(9) {
+            left: 72%;
+            top: 7%;
+            --twinkle-time: 5s;
+            --delay: -4s;
+        }
+
+        .star:nth-child(10) {
+            left: 36%;
+            top: 30%;
+            --twinkle-time: 4s;
+            --delay: -2s;
+        }
+
+        .star:nth-child(11) {
+            left: 21%;
+            top: 8%;
+            --twinkle-time: 5s;
+            --delay: -3s;
+        }
+
+        .star:nth-child(12) {
+            left: 60%;
+            top: 17%;
+            --twinkle-time: 3.8s;
+            --delay: -1s;
+        }
+
+        .star:nth-child(13) {
+            left: 88%;
+            top: 18%;
+            --twinkle-time: 4.2s;
+            --delay: -2s;
+        }
+
+        .star:nth-child(14) {
+            left: 48%;
+            top: 7%;
+            --twinkle-time: 3.4s;
+            --delay: -1s;
+        }
+
+        @keyframes starTwinkle {
+
+            0%,
+            100% {
+                opacity: 0.25;
+                transform: scale(0.65);
+            }
+
+            50% {
+                opacity: 0.95;
+                transform: scale(1.3);
+            }
+        }
+
+        /* =========================================================
+           MOON
+        ========================================================= */
+        .moon {
+            position: absolute;
+            z-index: 10;
+            top: 9%;
+            right: 10%;
+            width: 78px;
+            height: 78px;
+            border-radius: 50%;
+            background: #fff0bd;
+            -webkit-mask:
+                radial-gradient(circle at 68% 38%,
+                    transparent 0 53%,
+                    #000 54%);
+            mask:
+                radial-gradient(circle at 68% 38%,
+                    transparent 0 53%,
+                    #000 54%);
+            filter:
+                drop-shadow(0 0 8px rgba(255, 240, 189, 0.55)) drop-shadow(0 0 22px rgba(255, 240, 189, 0.25));
+            animation:
+                moonFloat 6s ease-in-out infinite;
+        }
+
+        .moon::after {
+            display: none;
+        }
+
+        @keyframes moonFloat {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(4px);
+            }
+        }
+
+        /* =========================================================
+           REALISTIC SMOKE CLOUD SYSTEM
+        ========================================================= */
+        .clouds {
+            position: absolute;
+            top: 4%;
+            left: -10%;
+            width: 120%;
+            height: 43%;
+            overflow: hidden;
+            z-index: 4;
+            pointer-events: none;
+        }
+
+        .cloud-layer {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            width: 480px;
+            height: 170px;
+            filter: blur(2px);
+            opacity: 0.52;
+            animation:
+                cloudFloat var(--cloud-speed) ease-in-out infinite alternate;
+            will-change: transform;
+        }
+
+        .cloud-layer::before,
+        .cloud-layer::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at 50% 45%,
+                    rgba(150, 157, 173, 0.60),
+                    rgba(91, 103, 124, 0.45) 48%,
+                    rgba(44, 56, 78, 0.08) 76%,
+                    transparent 100%);
+        }
+
+        .cloud-layer::before {
+            width: 270px;
+            height: 135px;
+            left: 45px;
+            top: 30px;
+        }
+
+        .cloud-layer::after {
+            width: 220px;
+            height: 115px;
+            left: 225px;
+            top: 48px;
+        }
+
+        .cloud-layer:nth-child(1) {
+            top: 0;
+            left: 2%;
+            --cloud-speed: 34s;
+            opacity: 0.42;
+            transform: scale(1.1);
+        }
+
+        .cloud-layer:nth-child(2) {
+            top: 100px;
+            left: 37%;
+            --cloud-speed: 42s;
+            opacity: 0.32;
+            transform: scale(0.85);
+            animation-delay: -12s;
+        }
+
+        .cloud-layer:nth-child(3) {
+            top: 185px;
+            left: 70%;
+            --cloud-speed: 48s;
+            opacity: 0.27;
+            transform: scale(0.72);
+            animation-delay: -22s;
+        }
+
+        @keyframes cloudFloat {
+            0% {
+                transform:
+                    translateX(-70px) translateY(0) scale(var(--cloud-scale, 1));
+            }
+
+            25% {
+                transform:
+                    translateX(20px) translateY(-10px) scale(var(--cloud-scale, 1));
+            }
+
+            50% {
+                transform:
+                    translateX(90px) translateY(5px) scale(var(--cloud-scale, 1));
+            }
+
+            75% {
+                transform:
+                    translateX(150px) translateY(-7px) scale(var(--cloud-scale, 1));
+            }
+
+            100% {
+                transform:
+                    translateX(220px) translateY(4px) scale(var(--cloud-scale, 1));
+            }
+        }
+
+        /* Additional soft smoke bubbles */
+        .cloud-layer {
+            background:
+                radial-gradient(circle at 15% 62%,
+                    rgba(126, 136, 153, 0.48) 0 12%,
+                    transparent 26%),
+                radial-gradient(circle at 32% 48%,
+                    rgba(145, 151, 166, 0.52) 0 18%,
+                    transparent 35%),
+                radial-gradient(circle at 49% 57%,
+                    rgba(122, 133, 151, 0.50) 0 20%,
+                    transparent 38%),
+                radial-gradient(circle at 68% 45%,
+                    rgba(139, 147, 163, 0.48) 0 17%,
+                    transparent 34%),
+                radial-gradient(circle at 84% 60%,
+                    rgba(105, 118, 139, 0.40) 0 14%,
+                    transparent 30%);
+        }
+
+        /* =========================================================
+           HORIZON HAZE
+        ========================================================= */
+        .horizon-haze {
+            position: absolute;
+            left: 0;
+            bottom: 43%;
+            width: 100%;
+            height: 90px;
+            z-index: 7;
+            pointer-events: none;
+            background:
+                linear-gradient(to bottom,
+                    rgba(101, 170, 173, 0.05),
+                    rgba(94, 160, 164, 0.15),
+                    rgba(8, 36, 52, 0.65));
+            filter: blur(4px);
+        }
+
+        /* =========================================================
+           DISTANT LAND
+        ========================================================= */
+        .land {
+            position: absolute;
+            left: 0;
+            bottom: 43%;
+            width: 100%;
+            height: 70px;
+            z-index: 8;
+            pointer-events: none;
+            background:
+                linear-gradient(to bottom,
+                    #102735,
+                    #061622);
+            filter: blur(0.4px);
+            clip-path:
+                polygon(0% 73%,
+                    7% 67%,
+                    14% 71%,
+                    22% 55%,
+                    28% 66%,
+                    36% 48%,
+                    43% 61%,
+                    51% 51%,
+                    58% 64%,
+                    65% 47%,
+                    73% 61%,
+                    82% 52%,
+                    89% 67%,
+                    100% 55%,
+                    100% 100%,
+                    0% 100%);
+        }
+
+        /* =========================================================
+           OCEAN
+        ========================================================= */
+        .ocean {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 49%;
+            z-index: 9;
+            overflow: hidden;
+            pointer-events: none;
+            background:
+                linear-gradient(to bottom,
+                    #17495b 0%,
+                    #123d51 12%,
+                    #0c3045 32%,
+                    #08263b 58%,
+                    #041827 78%,
+                    #020d18 100%);
+        }
+
+        .ocean::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 50% 0%,
+                    rgba(99, 193, 190, 0.25),
+                    transparent 52%),
+                linear-gradient(to bottom,
+                    rgba(82, 174, 178, 0.08),
+                    transparent 30%,
+                    rgba(0, 5, 12, 0.3) 100%);
+        }
+
+        /* =========================================================
+           MOON REFLECTION
+        ========================================================= */
+        .moon-reflection {
+            position: absolute;
+            z-index: 2;
+            top: -3%;
+            left: 66%;
+            width: 105px;
+            height: 100%;
+            opacity: 0.22;
+            filter: blur(5px);
+            transform:
+                perspective(300px) rotateX(25deg);
+            background:
+                linear-gradient(to bottom,
+                    rgba(255, 238, 186, 0.8),
+                    rgba(255, 231, 173, 0.30) 20%,
+                    rgba(255, 231, 173, 0.12) 55%,
+                    transparent 100%);
+            clip-path:
+                polygon(35% 0%,
+                    65% 0%,
+                    78% 12%,
+                    62% 20%,
+                    75% 29%,
+                    52% 38%,
+                    68% 48%,
+                    44% 59%,
+                    61% 68%,
+                    35% 80%,
+                    50% 91%,
+                    28% 100%,
+                    72% 100%,
+                    72% 0%);
+            animation:
+                reflectionPulse 5s ease-in-out infinite;
+        }
+
+        @keyframes reflectionPulse {
+
+            0%,
+            100% {
+                opacity: 0.15;
+                transform:
+                    perspective(300px) rotateX(25deg) scaleX(0.85);
+            }
+
+            50% {
+                opacity: 0.27;
+                transform:
+                    perspective(300px) rotateX(25deg) scaleX(1.1);
+            }
+        }
+
+        /* =========================================================
+           OCEAN WAVES
+           EXISTING ANIMATION KEPT EXACTLY
+        ========================================================= */
+        .ocean-wave {
+            position: absolute;
+            left: -25%;
+            width: 150%;
+            will-change: transform;
+            animation:
+                oceanFlow var(--wave-speed) ease-in-out infinite;
+        }
+
+        /* WAVE 1 */
+        .ocean-wave.wave1 {
+            top: 1%;
+            height: 90px;
+            background:
+                linear-gradient(to bottom,
+                    rgba(51, 103, 116, 0.80),
+                    rgba(30, 72, 87, 0.55));
+            opacity: 0.70;
+            --wave-speed: 12s;
+            clip-path:
+                polygon(0% 58%,
+                    5% 52%,
+                    10% 57%,
+                    15% 51%,
+                    20% 56%,
+                    25% 49%,
+                    30% 55%,
+                    35% 48%,
+                    40% 54%,
+                    45% 49%,
+                    50% 55%,
+                    55% 47%,
+                    60% 54%,
+                    65% 48%,
+                    70% 55%,
+                    75% 47%,
+                    80% 54%,
+                    85% 48%,
+                    90% 55%,
+                    95% 49%,
+                    100% 54%,
+                    100% 100%,
+                    0% 100%);
+        }
+
+        /* WAVE 2 */
+        .ocean-wave.wave2 {
+            top: 15%;
+            height: 125px;
+            background:
+                linear-gradient(to bottom,
+                    rgba(27, 78, 98, 0.90),
+                    rgba(14, 56, 76, 0.85));
+            opacity: 0.84;
+            --wave-speed: 9s;
+            animation-delay: -3s;
+            clip-path:
+                polygon(0% 56%,
+                    6% 46%,
+                    12% 55%,
+                    18% 43%,
+                    24% 54%,
+                    30% 41%,
+                    36% 53%,
+                    42% 44%,
+                    48% 55%,
+                    54% 42%,
+                    60% 53%,
+                    66% 43%,
+                    72% 54%,
+                    78% 41%,
+                    84% 53%,
+                    90% 43%,
+                    96% 54%,
+                    100% 46%,
+                    100% 100%,
+                    0% 100%);
+        }
+
+        /* WAVE 3 */
+        .ocean-wave.wave3 {
+            top: 32%;
+            height: 155px;
+            background:
+                linear-gradient(to bottom,
+                    #10415a,
+                    #0a3048);
+            --wave-speed: 7s;
+            animation-delay: -2s;
+            clip-path:
+                polygon(0% 58%,
+                    5% 44%,
+                    10% 55%,
+                    15% 39%,
+                    20% 54%,
+                    25% 42%,
+                    30% 56%,
+                    35% 38%,
+                    40% 53%,
+                    45% 40%,
+                    50% 55%,
+                    55% 37%,
+                    60% 52%,
+                    65% 40%,
+                    70% 56%,
+                    75% 38%,
+                    80% 53%,
+                    85% 41%,
+                    90% 55%,
+                    95% 39%,
+                    100% 52%,
+                    100% 100%,
+                    0% 100%);
+        }
+
+        /* WAVE 4 */
+        .ocean-wave.wave4 {
+            top: 52%;
+            height: 230px;
+            background:
+                linear-gradient(to bottom,
+                    #082b42,
+                    #031a2c);
+            --wave-speed: 10s;
+            animation-delay: -5s;
+            clip-path:
+                polygon(0% 54%,
+                    6% 34%,
+                    12% 52%,
+                    18% 29%,
+                    24% 51%,
+                    30% 33%,
+                    36% 55%,
+                    42% 27%,
+                    48% 52%,
+                    54% 30%,
+                    60% 56%,
+                    66% 25%,
+                    72% 52%,
+                    78% 31%,
+                    84% 55%,
+                    90% 28%,
+                    96% 51%,
+                    100% 34%,
+                    100% 100%,
+                    0% 100%);
+        }
+
+        /* =========================================================
+           EXISTING WAVE ANIMATION
+           DO NOT CHANGE
+        ========================================================= */
+        @keyframes oceanFlow {
+            0% {
+                transform:
+                    translateX(-5%) translateY(0) rotate(0deg);
+            }
+
+            25% {
+                transform:
+                    translateX(3%) translateY(-8px) rotate(0.35deg);
+            }
+
+            50% {
+                transform:
+                    translateX(8%) translateY(3px) rotate(-0.35deg);
+            }
+
+            75% {
+                transform:
+                    translateX(2%) translateY(-6px) rotate(0.25deg);
+            }
+
+            100% {
+                transform:
+                    translateX(-5%) translateY(0) rotate(0deg);
+            }
+        }
+
+        /* =========================================================
+           WAVE HIGHLIGHT LINES
+        ========================================================= */
+        .wave-highlight {
+            position: absolute;
+            left: -15%;
+            width: 130%;
+            height: 2px;
+            border-radius: 50%;
+            background:
+                linear-gradient(90deg,
+                    transparent,
+                    rgba(127, 205, 205, 0.25),
+                    rgba(176, 224, 221, 0.55),
+                    rgba(127, 205, 205, 0.22),
+                    transparent);
+            filter: blur(0.7px);
+            opacity: 0.55;
+            animation:
+                highlightMove var(--highlight-speed) ease-in-out infinite;
+        }
+
+        .wave-highlight.highlight1 {
+            top: 18%;
+            --highlight-speed: 8s;
+        }
+
+        .wave-highlight.highlight2 {
+            top: 28%;
+            opacity: 0.35;
+            --highlight-speed: 11s;
+            animation-delay: -3s;
+        }
+
+        .wave-highlight.highlight3 {
+            top: 39%;
+            opacity: 0.45;
+            --highlight-speed: 9s;
+            animation-delay: -5s;
+        }
+
+        .wave-highlight.highlight4 {
+            top: 53%;
+            opacity: 0.30;
+            --highlight-speed: 13s;
+            animation-delay: -2s;
+        }
+
+        .wave-highlight.highlight5 {
+            top: 69%;
+            opacity: 0.22;
+            --highlight-speed: 15s;
+            animation-delay: -7s;
+        }
+
+        @keyframes highlightMove {
+
+            0%,
+            100% {
+                transform:
+                    translateX(-7%) scaleX(0.92);
+            }
+
+            50% {
+                transform:
+                    translateX(7%) scaleX(1.06);
+            }
+        }
+
+        /* =========================================================
+           SMALL WATER GLINTS
+        ========================================================= */
+        .water-glints {
+            position: absolute;
+            inset: 0;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .glint {
+            position: absolute;
+            height: 2px;
+            border-radius: 50%;
+            background:
+                rgba(151, 213, 210, 0.65);
+            filter: blur(0.6px);
+            animation:
+                glintMove var(--glint-time) ease-in-out infinite;
+            animation-delay: var(--glint-delay);
+        }
+
+        .glint:nth-child(1) {
+            width: 55px;
+            left: 12%;
+            top: 64%;
+            --glint-time: 5s;
+            --glint-delay: -2s;
+        }
+
+        .glint:nth-child(2) {
+            width: 35px;
+            left: 27%;
+            top: 72%;
+            --glint-time: 6s;
+            --glint-delay: -3s;
+        }
+
+        .glint:nth-child(3) {
+            width: 70px;
+            left: 45%;
+            top: 61%;
+            --glint-time: 7s;
+            --glint-delay: -1s;
+        }
+
+        .glint:nth-child(4) {
+            width: 42px;
+            left: 70%;
+            top: 76%;
+            --glint-time: 5.5s;
+            --glint-delay: -4s;
+        }
+
+        .glint:nth-child(5) {
+            width: 28px;
+            left: 84%;
+            top: 67%;
+            --glint-time: 4.5s;
+            --glint-delay: -2s;
+        }
+
+        .glint:nth-child(6) {
+            width: 62px;
+            left: 58%;
+            top: 86%;
+            --glint-time: 8s;
+            --glint-delay: -5s;
+        }
+
+        .glint:nth-child(7) {
+            width: 30px;
+            left: 20%;
+            top: 88%;
+            --glint-time: 6s;
+            --glint-delay: -1s;
+        }
+
+        @keyframes glintMove {
+
+            0%,
+            100% {
+                opacity: 0.15;
+                transform:
+                    translateX(-15px) scaleX(0.7);
+            }
+
+            50% {
+                opacity: 0.75;
+                transform:
+                    translateX(15px) scaleX(1.2);
+            }
+        }
+
+        /* =========================================================
+           UNDERWATER DARKNESS
+        ========================================================= */
+        .deep-shadow {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 30%;
+            z-index: 22;
+            pointer-events: none;
+            background:
+                linear-gradient(to bottom,
+                    transparent,
+                    rgba(0, 7, 14, 0.38),
+                    rgba(0, 3, 8, 0.72));
+        }
+
+        /* =========================================================
+           WATER PARTICLES
+        ========================================================= */
+        .water-particles {
+            position: absolute;
+            inset: 0;
+            z-index: 23;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            border-radius: 50%;
+            background:
+                rgba(121, 194, 196, 0.45);
+            animation:
+                particleFloat var(--particle-speed) linear infinite;
+            animation-delay: var(--particle-delay);
+        }
+
+        .particle:nth-child(1) {
+            left: 12%;
+            top: 73%;
+            --particle-speed: 8s;
+            --particle-delay: -3s;
+        }
+
+        .particle:nth-child(2) {
+            left: 22%;
+            top: 82%;
+            --particle-speed: 11s;
+            --particle-delay: -6s;
+        }
+
+        .particle:nth-child(3) {
+            left: 34%;
+            top: 68%;
+            --particle-speed: 9s;
+            --particle-delay: -2s;
+        }
+
+        .particle:nth-child(4) {
+            left: 48%;
+            top: 88%;
+            --particle-speed: 12s;
+            --particle-delay: -7s;
+        }
+
+        .particle:nth-child(5) {
+            left: 62%;
+            top: 75%;
+            --particle-speed: 10s;
+            --particle-delay: -4s;
+        }
+
+        .particle:nth-child(6) {
+            left: 75%;
+            top: 84%;
+            --particle-speed: 13s;
+            --particle-delay: -5s;
+        }
+
+        .particle:nth-child(7) {
+            left: 89%;
+            top: 70%;
+            --particle-speed: 9s;
+            --particle-delay: -1s;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform:
+                    translateY(20px) translateX(0);
+                opacity: 0;
+            }
+
+            20% {
+                opacity: 0.7;
+            }
+
+            80% {
+                opacity: 0.5;
+            }
+
+            100% {
+                transform:
+                    translateY(-70px) translateX(18px);
+                opacity: 0;
+            }
+        }
+
+        /* =========================================================
+           CINEMATIC VIGNETTE
+        ========================================================= */
+        .vignette {
+            position: absolute;
+            inset: 0;
+            z-index: 50;
+            pointer-events: none;
+            background:
+                radial-gradient(ellipse at center,
+                    transparent 48%,
+                    rgba(0, 5, 12, 0.18) 75%,
+                    rgba(0, 3, 8, 0.55) 100%);
+        }
+
+        /* =========================================================
+           GAME TITLE
+        ========================================================= */
+        #game-title {
+            position: absolute;
+            z-index: 100;
+            top: 48%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-size: 60px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            text-shadow:
+                0 4px 10px rgba(0, 0, 0, 0.5),
+                0 0 25px rgba(255, 255, 255, 0.15);
+            pointer-events: none;
+        }
+
+        /* =========================================================
+           PLAY BUTTON
+        ========================================================= */
+        #play-button {
+            position: absolute;
+            z-index: 101;
+            top: 62%;
+            left: 50%;
+            transform: translateX(-50%);
+            min-width: 190px;
+            padding: 15px 55px;
+            font-size: 22px;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            background: white;
+            color: #05658a;
+            box-shadow:
+                0 8px 25px rgba(0, 0, 0, 0.25);
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        #play-button:hover {
+            transform:
+                translateX(-50%) translateY(-3px);
+            box-shadow:
+                0 12px 30px rgba(0, 0, 0, 0.35);
+        }
+
+        #play-button:active {
+            transform:
+                translateX(-50%) translateY(0);
+        }
+
+        /* =========================================================
+           SOUND BUTTON
+        ========================================================= */
+        #soundToggle {
+            position: absolute;
+            z-index: 101;
+            top: calc(62% + 70px);
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.9);
+            color: #05658a;
+            box-shadow:
+                0 5px 15px rgba(0, 0, 0, 0.18);
+            transition:
+                transform 0.2s ease,
+                background 0.2s ease;
+        }
+
+        #soundToggle:hover {
+            transform:
+                translateX(-50%) translateY(-2px);
+            background: white;
+        }
+
+        /* =========================================================
+           GAME SCREEN
+        ========================================================= */
+        #game-screen {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            background: #087da8;
+            position: relative;
+        }
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+        @media (max-width: 600px) {
+            .moon {
+                width: 62px;
+                height: 62px;
+                right: 8%;
+            }
+
+            .cloud-layer {
+                height: 130px;
+            }
+
+            .ocean {
+                height: 47%;
+            }
+
+            #game-title {
+                font-size: 38px;
+                letter-spacing: 2px;
+            }
+
+            #play-button {
+                top: 61%;
+                min-width: 160px;
+                padding: 13px 40px;
+                font-size: 19px;
+            }
+
+            #soundToggle {
+                top: calc(61% + 62px);
+                font-size: 14px;
+                padding: 9px 20px;
+            }
+        }
+
+        /* =========================================================
+   REALISTIC ATMOSPHERIC CLOUDS
+   ========================================================= */
+
+        .real-clouds {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 52%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 4;
+        }
+
+        /* Main cloud body */
+        .real-cloud {
+            position: absolute;
+            width: 300px;
+            height: 95px;
+
+            background:
+                radial-gradient(ellipse at 50% 70%,
+                    rgba(225, 232, 238, 0.24) 0%,
+                    rgba(180, 195, 207, 0.17) 35%,
+                    rgba(100, 120, 137, 0.08) 62%,
+                    transparent 78%);
+
+            filter: blur(8px);
+
+            opacity: 0.72;
+
+            animation:
+                cloudDrift 38s linear infinite,
+                cloudFloat 7s ease-in-out infinite alternate;
+        }
+
+        /* Individual soft cloud masses */
+        .real-cloud span {
+            position: absolute;
+            display: block;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(ellipse at 45% 38%,
+                    rgba(245, 248, 250, 0.48) 0%,
+                    rgba(205, 216, 224, 0.34) 35%,
+                    rgba(135, 153, 166, 0.18) 62%,
+                    rgba(70, 88, 105, 0.03) 80%,
+                    transparent 100%);
+
+            filter: blur(7px);
+        }
+
+        /* Soft lower cloud shadow */
+        .real-cloud::after {
+            content: "";
+            position: absolute;
+
+            left: 8%;
+            right: 8%;
+            bottom: 4px;
+
+            height: 38px;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(ellipse,
+                    rgba(35, 53, 69, 0.22) 0%,
+                    rgba(50, 70, 85, 0.12) 45%,
+                    transparent 75%);
+
+            filter: blur(12px);
+        }
+
+
+        /* =========================================================
+   CLOUD 1
+   ========================================================= */
+
+        .cloud-1 {
+            top: 17%;
+            left: -330px;
+            transform: scale(1.15);
+            animation-delay: -8s, -2s;
+        }
+
+        .cloud-1 span:nth-child(1) {
+            width: 135px;
+            height: 65px;
+            left: 20px;
+            bottom: 15px;
+        }
+
+        .cloud-1 span:nth-child(2) {
+            width: 105px;
+            height: 82px;
+            left: 78px;
+            bottom: 22px;
+        }
+
+        .cloud-1 span:nth-child(3) {
+            width: 145px;
+            height: 70px;
+            left: 135px;
+            bottom: 13px;
+        }
+
+        .cloud-1 span:nth-child(4) {
+            width: 75px;
+            height: 58px;
+            left: 185px;
+            bottom: 30px;
+        }
+
+        .cloud-1 span:nth-child(5) {
+            width: 100px;
+            height: 55px;
+            left: 110px;
+            bottom: 5px;
+        }
+
+        .cloud-1 span:nth-child(6) {
+            width: 90px;
+            height: 50px;
+            left: 220px;
+            bottom: 10px;
+        }
+
+
+        /* =========================================================
+   CLOUD 2
+   ========================================================= */
+
+        .cloud-2 {
+            top: 28%;
+            left: 20%;
+            width: 390px;
+            height: 110px;
+            transform: scale(0.9);
+            opacity: 0.52;
+
+            animation-duration: 55s, 9s;
+            animation-delay: -25s, -4s;
+        }
+
+        .cloud-2 span:nth-child(1) {
+            width: 145px;
+            height: 65px;
+            left: 15px;
+            bottom: 15px;
+        }
+
+        .cloud-2 span:nth-child(2) {
+            width: 120px;
+            height: 90px;
+            left: 85px;
+            bottom: 18px;
+        }
+
+        .cloud-2 span:nth-child(3) {
+            width: 150px;
+            height: 72px;
+            left: 155px;
+            bottom: 12px;
+        }
+
+        .cloud-2 span:nth-child(4) {
+            width: 100px;
+            height: 58px;
+            left: 230px;
+            bottom: 25px;
+        }
+
+        .cloud-2 span:nth-child(5) {
+            width: 125px;
+            height: 65px;
+            left: 270px;
+            bottom: 8px;
+        }
+
+        .cloud-2 span:nth-child(6) {
+            width: 80px;
+            height: 48px;
+            left: 320px;
+            bottom: 16px;
+        }
+
+        .cloud-2 span:nth-child(7) {
+            width: 110px;
+            height: 52px;
+            left: 45px;
+            bottom: 4px;
+        }
+
+
+        /* =========================================================
+   CLOUD 3
+   ========================================================= */
+
+        .cloud-3 {
+            top: 8%;
+            left: 65%;
+            width: 350px;
+            height: 100px;
+
+            opacity: 0.42;
+
+            transform: scale(0.85);
+
+            animation-duration: 48s, 8s;
+            animation-delay: -15s, -5s;
+        }
+
+        .cloud-3 span:nth-child(1) {
+            width: 120px;
+            height: 58px;
+            left: 10px;
+            bottom: 16px;
+        }
+
+        .cloud-3 span:nth-child(2) {
+            width: 115px;
+            height: 80px;
+            left: 65px;
+            bottom: 20px;
+        }
+
+        .cloud-3 span:nth-child(3) {
+            width: 140px;
+            height: 68px;
+            left: 130px;
+            bottom: 13px;
+        }
+
+        .cloud-3 span:nth-child(4) {
+            width: 95px;
+            height: 58px;
+            left: 200px;
+            bottom: 25px;
+        }
+
+        .cloud-3 span:nth-child(5) {
+            width: 110px;
+            height: 52px;
+            left: 245px;
+            bottom: 10px;
+        }
+
+        .cloud-3 span:nth-child(6) {
+            width: 80px;
+            height: 45px;
+            left: 275px;
+            bottom: 17px;
+        }
+
+
+        /* =========================================================
+   CLOUD 4
+   ========================================================= */
+
+        .cloud-4 {
+            top: 38%;
+            left: 72%;
+            width: 280px;
+            height: 85px;
+
+            opacity: 0.30;
+
+            transform: scale(0.7);
+
+            animation-duration: 65s, 10s;
+            animation-delay: -40s, -3s;
+        }
+
+        .cloud-4 span:nth-child(1) {
+            width: 105px;
+            height: 50px;
+            left: 5px;
+            bottom: 13px;
+        }
+
+        .cloud-4 span:nth-child(2) {
+            width: 95px;
+            height: 70px;
+            left: 55px;
+            bottom: 15px;
+        }
+
+        .cloud-4 span:nth-child(3) {
+            width: 120px;
+            height: 58px;
+            left: 110px;
+            bottom: 10px;
+        }
+
+        .cloud-4 span:nth-child(4) {
+            width: 80px;
+            height: 48px;
+            left: 170px;
+            bottom: 20px;
+        }
+
+        .cloud-4 span:nth-child(5) {
+            width: 95px;
+            height: 45px;
+            left: 205px;
+            bottom: 8px;
+        }
+
+        .cloud-4 span:nth-child(6) {
+            width: 65px;
+            height: 40px;
+            left: 235px;
+            bottom: 15px;
+        }
+
+        .cloud-4 span:nth-child(7) {
+            width: 85px;
+            height: 42px;
+            left: 30px;
+            bottom: 4px;
+        }
+
+
+        /* =========================================================
+   CLOUD MOVEMENT
+   ========================================================= */
+
+        @keyframes cloudDrift {
+
+            0% {
+                margin-left: -50px;
+            }
+
+            100% {
+                margin-left: calc(100vw + 500px);
+            }
+
+        }
+
+        @keyframes cloudFloat {
+
+            0% {
+                margin-top: -3px;
+            }
+
+            50% {
+                margin-top: 5px;
+            }
+
+            100% {
+                margin-top: -2px;
+            }
+
+        }
+
+
+        /* =========================================================
+   RESPONSIVE CLOUDS
+   ========================================================= */
+
+        @media (max-width: 768px) {
+
+            .real-cloud {
+                transform: scale(0.65);
+            }
+
+            .cloud-1 {
+                top: 15%;
+            }
+
+            .cloud-2 {
+                top: 27%;
+            }
+
+            .cloud-3 {
+                top: 8%;
+            }
+
+            .cloud-4 {
+                top: 35%;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================================================
+         BACKGROUND MUSIC
+    ========================================================= -->
+    <audio id="background-music" autoplay loop>
+        <source src="assets/audio/BackgroundMusic.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- =========================================================
+         INTRO SCREEN
+    ========================================================= -->
+    <div id="intro-screen">
+
+        <!-- =====================================================
+             STARS
+        ===================================================== -->
+        <div class="stars">
+            <div class="star"></div>
+            <div class="star"></div>
+            <div class="star"></div>
+            <div class="star"></div>
+            <div class="star"></div>
+            <div class="star"></div>
+            <div class="star"></div>
+            <div class="star"></div>
+            <div class="star"></div>
+            <div class="star"></div>
+            <div class="star"></div>
+            <div class="star"></div>
+            <div class="star"></div>
+            <div class="star"></div>
+        </div>
+        <!-- REALISTIC MOVING CLOUDS -->
+        <div class="real-clouds">
+
+            <div class="real-cloud cloud-1">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <div class="real-cloud cloud-2">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <div class="real-cloud cloud-3">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <div class="real-cloud cloud-4">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+        </div>
+        <!-- =====================================================
+             MOON
+        ===================================================== -->
+        <div class="moon"></div>
+
+        <!-- =====================================================
+             HORIZON
+        ===================================================== -->
+        <div class="horizon-haze"></div>
+        <div class="land"></div>
+
+        <!-- =====================================================
+             OCEAN
+        ===================================================== -->
+        <div class="ocean">
+
+            <!-- Moon reflection -->
+            <div class="moon-reflection"></div>
+
+            <!-- Waves -->
+            <div class="ocean-wave wave1"></div>
+            <div class="ocean-wave wave2"></div>
+            <div class="ocean-wave wave3"></div>
+            <div class="ocean-wave wave4"></div>
+
+            <!-- Wave highlights -->
+            <div class="wave-highlight highlight1"></div>
+            <div class="wave-highlight highlight2"></div>
+            <div class="wave-highlight highlight3"></div>
+            <div class="wave-highlight highlight4"></div>
+            <div class="wave-highlight highlight5"></div>
+
+            <!-- Water glints -->
+            <div class="water-glints">
+                <div class="glint"></div>
+                <div class="glint"></div>
+                <div class="glint"></div>
+                <div class="glint"></div>
+                <div class="glint"></div>
+                <div class="glint"></div>
+                <div class="glint"></div>
+            </div>
+
+            <!-- Water particles -->
+            <div class="water-particles">
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+            </div>
+
+            <!-- Deep water -->
+            <div class="deep-shadow"></div>
+        </div>
+
+        <!-- =====================================================
+             TITLE
+        ===================================================== -->
+        <h1 id="game-title">
+            🌊 OCEAN QUEST
+        </h1>
+
+        <!-- =====================================================
+             PLAY BUTTON
+        ===================================================== -->
+        <button id="play-button">
+            PLAY
+        </button>
+
+        <!-- =====================================================
+             SOUND BUTTON
+        ===================================================== -->
+        <button id="soundToggle" type="button">
+            🔊 Sound ON
+        </button>
+
+        <!-- =====================================================
+             CINEMATIC VIGNETTE
+        ===================================================== -->
+        <div class="vignette"></div>
+
+    </div>
+
+    <!-- =========================================================
+         GAME SCREEN
+         Your actual game will go inside this later.
+    ========================================================= -->
+    <div id="game-screen">
+        <!-- Your Ocean Quest game code will be placed here -->
+    </div>
+
+    <!-- =========================================================
+         JAVASCRIPT
+    ========================================================= -->
+    <script>
+
+        /* =====================================================
+           ELEMENTS
+        ===================================================== */
+        const introScreen =
+            document.getElementById("intro-screen");
+
+        const gameScreen =
+            document.getElementById("game-screen");
+
+        const playButton =
+            document.getElementById("play-button");
+
+        const backgroundMusic =
+            document.getElementById("background-music");
+
+        const soundToggle =
+            document.getElementById("soundToggle");
+
+
+        /* =====================================================
+           TRY TO START MUSIC
+        ===================================================== */
+        backgroundMusic.play().catch(function () {
+            console.log(
+                "Browser blocked automatic music."
+            );
+        });
+
+
+        /* =====================================================
+           START MUSIC AFTER USER INTERACTION
+        ===================================================== */
+        function startMusicAfterInteraction() {
+
+            backgroundMusic.play().catch(function (error) {
+
+                console.log(
+                    "Music could not start:",
+                    error
+                );
+
+            });
+
+            introScreen.removeEventListener(
+                "click",
+                startMusicAfterInteraction
+            );
+        }
+
+        introScreen.addEventListener(
+            "click",
+            startMusicAfterInteraction
+        );
+
+
+        /* =====================================================
+           SOUND ON / OFF
+        ===================================================== */
+        soundToggle.addEventListener(
+            "click",
+            function (event) {
+
+                event.stopPropagation();
+
+                if (backgroundMusic.muted) {
+
+                    backgroundMusic.muted = false;
+
+                    soundToggle.innerHTML =
+                        "🔊 Sound ON";
+
+                } else {
+
+                    backgroundMusic.muted = true;
+
+                    soundToggle.innerHTML =
+                        "🔇 Sound OFF";
+                }
+            }
+        );
+
+
+        /* =====================================================
+           PLAY BUTTON
+        ===================================================== */
+        playButton.addEventListener(
+            "click",
+            function () {
+
+                /* Make sure music starts */
+                backgroundMusic.play().catch(function () {
+
+                    console.log(
+                        "Music playback blocked."
+                    );
+
+                });
+
+                /* Hide intro */
+                introScreen.style.display =
+                    "none";
+
+                /* Show game */
+                gameScreen.style.display =
+                    "block";
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>
